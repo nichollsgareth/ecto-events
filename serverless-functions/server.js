@@ -17,63 +17,68 @@ app.use(function (req, res, next) {
 });
 
 //Setting up server
- var server = app.listen(process.env.PORT || 8080, function () {
+ var server = app.listen(process.env.PORT || 5000, function () {
     var port = server.address().port;
     console.log("App now running on port", port);
  });
 
 //Initiallising connection string
 var dbConfig = {
-    user:  “<dbUserName>”,
-    password: “<dbPassword>”,
-    server: “<dbHost_URL>”,
-    database:” <dbName>”
+    user:  "ecto-dev",
+    password: "admin",
+    server: "WIN-VLW27RJG3L",
+    database:"ecto-dev",
+    options: {
+		encrypt: false
+    }
 };
 
 //Function to connect to database and execute query
 var  executeQuery = function(res, query){
-     sql.connect(dbConfig, function (err) {
-         if (err) {
-                     console.log("Error while connecting database :- " + err);
-                     res.send(err);
-                  }
-                  else {
-                         // create Request object
-                         var request = new sql.Request();
-                         // query to the database
-                         request.query(query, function (err, res) {
-                           if (err) {
-                                      console.log("Error while querying database :- " + err);
-                                      res.send(err);
-                                     }
-                                     else {
-                                       res.send(res);
-                                            }
-                               });
-                       }
-      });
+	sql.connect(dbConfig, function (err) {
+		if (err) {
+			console.log("Error while connecting database :- " + err);
+			res.send(err);
+		}
+		else {
+			// create Request object
+			var request = new sql.Request();
+			// query to the database
+			request.query(query, function (err, responsePacket) {
+				if (err) {
+					console.log("Error while querying database :- " + err);
+					res.send(err);
+					sql.close();
+				}
+				else {
+					res.send(responsePacket);
+					sql.close();
+				}
+			});
+		}
+	});
 }
 
 //GET API
-app.get("/api/user", function(req , res){
-                var query = "select * from [user]";
-                executeQuery (res, query);
+app.get("/api/events", function(req , res){
+	var query = "SELECT * FROM Event WHERE IsDeleted = 0 AND IsActive = 1";
+    executeQuery (res, query);
 });
 
 //POST API
- app.post("/api/user", function(req , res){
-                var query = "INSERT INTO [user] (Name,Email,Password) VALUES (req.body.Name,req.body.Email,req.body.Password”);
-                executeQuery (res, query);
+app.post("/api/user", function(req , res){
+	var query = "INSERT INTO [user] (Name,Email,Password) VALUES (req.body.Name,req.body.Email,req.body.Password)";
+    executeQuery (res, query);
 });
 
 //PUT API
- app.put("/api/user/:id", function(req , res){
-                var query = "UPDATE [user] SET Name= " + req.body.Name  +  " , Email=  " + req.body.Email + "  WHERE Id= " + req.params.id;
-                executeQuery (res, query);
+app.put("/api/user/:id", function(req , res){
+	var query = "UPDATE [user] SET Name= " + req.body.Name  +  " , Email=  " + req.body.Email + "  WHERE Id= " + req.params.id;
+    executeQuery (res, query);
 });
 
 // DELETE API
- app.delete("/api/user /:id", function(req , res){
-                var query = "DELETE FROM [user] WHERE Id=" + req.params.id;
-                executeQuery (res, query);
+app.delete("/api/user /:id", function(req , res){
+	var query = "DELETE FROM [user] WHERE Id=" + req.params.id;
+	executeQuery (res, query);
 });
