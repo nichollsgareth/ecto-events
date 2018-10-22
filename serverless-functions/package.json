@@ -1,0 +1,19 @@
+{
+  "name": "serverless-functions",
+  "version": "1.0.0",
+  "description": "business logic function and api",
+  "main": "server.js",
+  "scripts": {
+    "test": "init"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nichollsgareth/ecto-events.git"
+  },
+  "author": "Gareth Nicholls",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nichollsgareth/ecto-events/issues"
+  },
+  "homepage": "https://github.com/nichollsgareth/ecto-events#readme"
+}
