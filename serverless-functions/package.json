@@ -4,8 +4,8 @@
   "description": "business logic function and api",
   "main": "server.js",
   "dependencies": {
-    "body-parser": "^1.15.2",
-    "express": "^4.14.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
     "mssql": "^4.2.2"
   },
   "scripts": {

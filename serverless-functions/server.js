@@ -5,7 +5,9 @@ var sql = require("mssql");
 var app = express();
 
 // Body Parser Middleware
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 //CORS Middleware
 app.use(function (req, res, next) {
@@ -26,7 +28,7 @@ app.use(function (req, res, next) {
 var dbConfig = {
     user:  "ecto-dev",
     password: "admin",
-    server: "WIN-VLW27RJG3L",
+    server: "WIN-GJKJJAHU6O",
     database:"ecto-dev",
     options: {
 		encrypt: false
@@ -65,20 +67,27 @@ app.get("/api/events", function(req , res){
     executeQuery (res, query);
 });
 
+//GET API
+app.get("/api/event", function(req , res){
+	console.log(req.query);
+	var query = "SELECT * FROM Event WHERE publishdate = '"+req.query.publishdate+"' AND radius <= "+req.query.radius+" AND IsDeleted = 0 AND IsActive = 1";
+    executeQuery (res, query);
+});
+
 //POST API
-app.post("/api/user", function(req , res){
-	var query = "INSERT INTO [user] (Name,Email,Password) VALUES (req.body.Name,req.body.Email,req.body.Password)";
+app.post("/api/event", function(req , res){
+	var query = "INSERT INTO Event (DisplayName,Latitude,Longitude,Radius,PublishDate,IsActive,IsDeleted) VALUES ('"+req.body.displayname+"',"+req.body.latitude+","+req.body.longitude+","+req.body.radius+",'"+req.body.publishdate+"',1,0)";
     executeQuery (res, query);
 });
 
 //PUT API
-app.put("/api/user/:id", function(req , res){
-	var query = "UPDATE [user] SET Name= " + req.body.Name  +  " , Email=  " + req.body.Email + "  WHERE Id= " + req.params.id;
+app.put("/api/event/:id", function(req , res){
+	var query = "UPDATE Event SET PublishDate= " + req.body.publishdate  +  " , Radius=  " + req.body.radius + ", Latitude=  " + req.body.latitude + ", Logitude=  " + req.body.longitude + " WHERE Id= " + req.params.id;
     executeQuery (res, query);
 });
 
 // DELETE API
-app.delete("/api/user /:id", function(req , res){
-	var query = "DELETE FROM [user] WHERE Id=" + req.params.id;
+app.delete("/api/event/:id", function(req , res){
+	var query = "UPDATE Event SET IsDeleted= 1 WHERE EventId = " + req.params.id;
 	executeQuery (res, query);
 });
