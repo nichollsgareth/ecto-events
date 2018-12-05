@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 import 'package:ecto_events/widgets/event_search.dart';
 import 'package:ecto_events/widgets/image_capture.dart';
+import 'package:ecto_events/widgets/camera_capture.dart';
 import 'package:ecto_events/widgets/event_manager.dart';
 
-void main() => runApp(MyApp());
+List<CameraDescription> cameras;
+
+Future<void> main() async {
+  // Fetch the available cameras before initializing the app.
+  cameras = await availableCameras();
+  runApp(App());
+}
+
+//void main() => runApp(App());
 
 /// Returns the color scheme used by ecto
 MaterialColor ectoColor() {
@@ -21,7 +31,7 @@ MaterialColor ectoColor() {
   });
 }
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -32,30 +42,27 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         primaryColor: ectoColor(), backgroundColor: Colors.white
       ),
-      home: MyHomePage(title: 'Ecto Events'),
+      home: HomePage(title: 'Ecto Events'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _HomePageState extends State<HomePage> {
   PageController pageController;
   int page = 1;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  final CameraExampleHome _ImageCapturePage = new CameraExampleHome(cameras);
+  final EventSearch _EventSearchPage = new EventSearch();
+  final EventManager _EventManagerPage = new EventManager();
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +70,9 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.white,
         body: new PageView(
             children: [
-              new EventSearch(),
-              new ImageCapture(),
-              new EventManager()
+              _ImageCapturePage,
+              _EventSearchPage,
+              _EventManagerPage
             ],
             controller: pageController,
             onPageChanged: onPageChanged
@@ -73,13 +80,13 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: new BottomNavigationBar(
           items: [
             new BottomNavigationBarItem(
+              //onPressed: _incrementCounter,
+                icon: new Icon(Icons.camera),
+                title: new Text("capture")),
+            new BottomNavigationBarItem(
               icon: new Icon(Icons.location_searching),
               title: new Text("search"),
             ),
-            new BottomNavigationBarItem(
-                //onPressed: _incrementCounter,
-                icon: new Icon(Icons.camera),
-                title: new Text("capture")),
             new BottomNavigationBarItem(
                 icon: new Icon(Icons.add), title: new Text("new"))
           ],
