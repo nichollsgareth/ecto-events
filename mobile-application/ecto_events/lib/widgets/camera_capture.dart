@@ -49,9 +49,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text('Camera example'),
-      ),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -73,7 +70,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome> {
               ),
             ),
           ),
-          _captureControlRowWidget(),
+          //_captureControlRowWidget(),
           Padding(
             padding: const EdgeInsets.all(5.0),
             child: Row(
@@ -86,6 +83,17 @@ class _CameraExampleHomeState extends State<CameraExampleHome> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: controller != null &&
+            controller.value.isInitialized &&
+            !controller.value.isRecordingVideo
+            ? onTakePictureButtonPressed
+            : null,
+        tooltip: 'Capture',
+        child: Icon(Icons.camera_alt),
+      ),
+      floatingActionButtonLocation:
+      FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -137,7 +145,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome> {
   }
 
   /// Display the control bar with buttons to take pictures and record videos.
-  Widget _captureControlRowWidget() {
+  /*Widget _captureControlRowWidget() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       mainAxisSize: MainAxisSize.max,
@@ -171,7 +179,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome> {
         )
       ],
     );
-  }
+  }*/
 
   /// Display a row of toggle to select the camera (or a message if no camera is available).
   Widget _cameraTogglesRowWidget() {
